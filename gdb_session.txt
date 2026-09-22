@@ -1,0 +1,30 @@
+Breakpoint 1 at 0x1520a: file IncidentMediator.cpp, line 20.
+Starting program: /mnt/c/Users/entle/OneDrive - University of Pretoria/Year 2/Semester 2/COS214/Practicals/Practical 5/COS214-PRAC5/campusGuard 
+
+This GDB supports auto-downloading debuginfo from the following URLs:
+  <https://debuginfod.ubuntu.com>
+Debuginfod has been enabled.
+To make this setting permanent, add 'set debuginfod enabled on' to .gdbinit.
+Downloading separate debug info for system-supplied DSO at 0x7ffff7fc3000
+[###                                                                                                                                                           ][ ###                                                                                                                                                          ][  ###                                                                                                                                                         ]                                                                                                                                                                  Downloading separate debug info for /lib/x86_64-linux-gnu/libstdc++.so.6
+[###                                                                                                                                                           ]                                                                                                                                                                  Downloading separate debug info for /lib/x86_64-linux-gnu/libgcc_s.so.1
+[###                                                                                                                                                           ]                                                                                                                                                                  [Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Breakpoint 1, IncidentMediator::notify (this=0x5555555906e0, sender=0x555555590be0, event="unit_dispatched", incident=0x5555555910f0) at IncidentMediator.cpp:20
+20	                              Incident* incident) {
+$1 = 6
+$2 = {0x555555590b00, 0x555555590b70, 0x555555590be0, 0x555555590c50, 0x555555590c90, 0x555555590cd0, 0x0, 0x0}
+Breakpoint 2 at 0x5555555693af: file IncidentMediator.cpp, line 27.
+Continuing.
+
+Breakpoint 2, IncidentMediator::notify (this=0x5555555906e0, sender=0x555555590be0, event="unit_dispatched", incident=0x5555555910f0) at IncidentMediator.cpp:27
+27	        if (colleagues_[i] && colleagues_[i] != sender)
+$3 = 6
+$4 = 6
+$5 = (Colleague *) 0x0
+26	    for (size_t i = 0; i <= colleagues_.size(); ++i) {
+27	        if (colleagues_[i] && colleagues_[i] != sender)
+28	            colleagues_[i]->receive(event, incident);
+29	    }
+30	}

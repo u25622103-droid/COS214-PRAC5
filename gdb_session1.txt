@@ -1,0 +1,76 @@
+(gdb) set pagination off
+(gdb) set logging file gdb_session.txt
+(gdb) set logging enabled on
+Copying output to gdb_session.txt.
+Copying debug output to gdb_session.txt.
+(gdb) break IncidentMediator::notify
+Breakpoint 1 at 0x1520a: file IncidentMediator.cpp, line 20.
+(gdb) run
+Starting program: /mnt/c/Users/entle/OneDrive - University of Pretoria/Year 2/Semester 2/COS214/Practicals/Practical 5/COS214-PRAC5/campusGuard 
+
+This GDB supports auto-downloading debuginfo from the following URLs:
+  <https://debuginfod.ubuntu.com>
+Enable debuginfod for this session? (y or [n]) y
+Debuginfod has been enabled.
+To make this setting permanent, add 'set debuginfod enabled on' to .gdbinit.
+Downloading separate debug info for system-supplied DSO at 0x7ffff7fc3000
+Downloading separate debug info for /lib/x86_64-linux-gnu/libstdc++.so.6                                                                                          
+Downloading separate debug info for /lib/x86_64-linux-gnu/libgcc_s.so.1                                                                                           
+[Thread debugging using libthread_db enabled]                                                                                                                     
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+==================================================
+ CampusGuard: Emergency Response Coordination
+==================================================
+[Startup] 6 response components registered with the coordinator.
+
+==================================================
+ SCENARIO 1: Fire alarm, Engineering Building A
+==================================================
+
+--- Facade::reportIncident ---
+[Dashboard] INC-001 (Fire, severity 5) @ Engineering Building A -> Reported
+[AlertService] -> ZONE-A: Incident INC-001 is now Reported
+[AuditLog] recorded: INC-001 | Reported | Engineering Building A
+[AlertService] -> ZONE-A: An incident has been reported in your area.
+[Facade] Zone check: Engineering Building A [Unlocked, level 0]
+
+--- Facade::respondToIncident ---
+[Command] ActivateAlertCommand -> Alert Service
+[AlertService] CAMPUS BROADCAST: Emergency response underway for INC-001 at Engineering Building A
+[Command] DispatchUnitCommand -> Facilities Desk
+[Facilities FAC-01] On scene at Engineering Building A.
+    -> utilities isolated, hazard barriers placed.
+[Mediator] Coordinating Facilities unit FAC-01 on scene at Engineering Building A.
+
+Breakpoint 1, IncidentMediator::notify (this=0x5555555906e0, sender=0x555555590be0, event="unit_dispatched", incident=0x5555555910f0) at IncidentMediator.cpp:20
+20                                    Incident* incident) {
+(gdb) print colleagues_.size()
+$1 = 6
+(gdb) print colleagues_[0]@8
+$2 = {0x555555590b00, 0x555555590b70, 0x555555590be0, 0x555555590c50, 0x555555590c90, 0x555555590cd0, 0x0, 0x0}
+(gdb) break IncidentMediator.cpp:27 if i == 6
+Breakpoint 2 at 0x5555555693af: file IncidentMediator.cpp, line 27.
+(gdb) continue
+Continuing.
+[Mediator] 'unit_dispatched' raised by Facilities Desk for INC-001 -> informing 5 component(s).
+    [Security Desk] clearing an approach route for Engineering Building A.
+    [Medical Desk] preparing a casualty point (1 unit(s) still free).
+[AccessZone ZONE-A] access restricted to level 3 (responders only).
+[AlertService] -> ZONE-A: Responders are on scene. Follow their instructions.
+
+Breakpoint 2, IncidentMediator::notify (this=0x5555555906e0, sender=0x555555590be0, event="unit_dispatched", incident=0x5555555910f0) at IncidentMediator.cpp:27
+27              if (colleagues_[i] && colleagues_[i] != sender)
+(gdb) print i
+$3 = 6
+(gdb) print colleagues_.size()
+$4 = 6
+(gdb) print colleagues_[i]
+$5 = (Colleague *) 0x0
+(gdb) list 26,30
+26          for (size_t i = 0; i <= colleagues_.size(); ++i) {
+27              if (colleagues_[i] && colleagues_[i] != sender)
+28                  colleagues_[i]->receive(event, incident);
+29          }
+30      }
+(gdb) set logging enabled off
+Done logging to gdb_session.txt.
