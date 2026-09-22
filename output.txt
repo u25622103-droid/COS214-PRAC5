@@ -1,0 +1,191 @@
+==================================================
+ CampusGuard: Emergency Response Coordination
+==================================================
+[Startup] 6 response components registered with the coordinator.
+
+==================================================
+ SCENARIO 1: Fire alarm, Engineering Building A
+==================================================
+
+--- Facade::reportIncident ---
+[Dashboard] INC-001 (Fire, severity 5) @ Engineering Building A -> Reported
+[AlertService] -> ZONE-A: Incident INC-001 is now Reported
+[AuditLog] recorded: INC-001 | Reported | Engineering Building A
+[AlertService] -> ZONE-A: An incident has been reported in your area.
+[Facade] Zone check: Engineering Building A [Unlocked, level 0]
+
+--- Facade::respondToIncident ---
+[Command] ActivateAlertCommand -> Alert Service
+[AlertService] CAMPUS BROADCAST: Emergency response underway for INC-001 at Engineering Building A
+[Command] DispatchUnitCommand -> Facilities Desk
+[Facilities FAC-01] On scene at Engineering Building A.
+    -> utilities isolated, hazard barriers placed.
+[Mediator] Coordinating Facilities unit FAC-01 on scene at Engineering Building A.
+[Mediator] 'unit_dispatched' raised by Facilities Desk for INC-001 -> informing 5 component(s).
+    [Security Desk] clearing an approach route for Engineering Building A.
+    [Medical Desk] preparing a casualty point (1 unit(s) still free).
+[AccessZone ZONE-A] access restricted to level 3 (responders only).
+[AlertService] -> ZONE-A: Responders are on scene. Follow their instructions.
+[Command] SecureAreaCommand -> Access Control (ZONE-A)
+[AccessZone ZONE-A] access restricted to level 3 (responders only).
+[Adapter] secureZone("ZONE-A") -> legacyLockdown(101)
+[CityMainframe] LCK|101|ACK
+[State] INC-001: Reported -> Dispatched (responders assigned).
+[Dashboard] INC-001 (Fire, severity 5) @ Engineering Building A -> Dispatched
+[AlertService] -> ZONE-A: Incident INC-001 is now Dispatched
+[AuditLog] recorded: INC-001 | Dispatched | Engineering Building A
+
+--- Operator action: order evacuation ---
+[Command] EvacuateZoneCommand -> Access Control + Alerts (ZONE-A)
+[AccessZone ZONE-A] doors LOCKED.
+[AlertService] -> ZONE-A: EVACUATE NOW - use the nearest fire exit.
+[Mediator] 'evacuation_ordered' raised by Security Desk for INC-001 -> informing 5 component(s).
+    [Medical Desk] positioning at the assembly point for walking wounded.
+    [Facilities Desk] releasing stairwell doors and lighting escape routes.
+[AccessZone ZONE-A] doors LOCKED.
+[AlertService] CAMPUS BROADCAST: EVACUATE ZONE-A immediately.
+
+--- Operator action: send security as well ---
+[Command] DispatchUnitCommand -> Security Desk
+[Security SEC-01] On scene at Engineering Building A.
+    -> perimeter established, crowd held back.
+[Mediator] Coordinating Security unit SEC-01 on scene at Engineering Building A.
+[Mediator] 'unit_dispatched' raised by Security Desk for INC-001 -> informing 5 component(s).
+    [Medical Desk] preparing a casualty point (1 unit(s) still free).
+    [Facilities Desk] isolating power and ventilation around ZONE-A.
+[AccessZone ZONE-A] access restricted to level 3 (responders only).
+[AlertService] -> ZONE-A: Responders are on scene. Follow their instructions.
+
+--- Facade::resolveIncident ---
+[State] INC-001: Dispatched -> InProgress (units on scene).
+[Dashboard] INC-001 (Fire, severity 5) @ Engineering Building A -> InProgress
+[AlertService] -> ZONE-A: Incident INC-001 is now InProgress
+[AuditLog] recorded: INC-001 | InProgress | Engineering Building A
+[State] INC-001: InProgress -> Resolved (scene made safe).
+[Dashboard] INC-001 (Fire, severity 5) @ Engineering Building A -> Resolved
+[AlertService] -> ZONE-A: Incident INC-001 is now Resolved
+[AuditLog] recorded: INC-001 | Resolved | Engineering Building A
+[Facilities FAC-01] stood down, back at base.
+[Security SEC-01] stood down, back at base.
+[Mediator] 'incident_resolved' raised by system for INC-001 -> informing 6 component(s).
+    [Security Desk] standing the perimeter down.
+    [Medical Desk] closing the patient record for INC-001.
+    [Facilities Desk] scheduling a damage inspection.
+[AccessZone ZONE-A] doors UNLOCKED, access restored.
+[AlertService] CAMPUS BROADCAST: Incident INC-001 is resolved. Normal operations resume.
+[Adapter] releaseZone("ZONE-A") -> legacyRelease(101)
+[CityMainframe] REL|101|ACK
+
+==================================================
+ SCENARIO 2: Collapse in Chemistry Lab 3
+==================================================
+
+--- Facade::reportIncident ---
+[Dashboard] INC-002 (Medical, severity 4) @ Chemistry Lab 3 -> Reported
+[AlertService] -> ZONE-LAB3: Incident INC-002 is now Reported
+[AuditLog] recorded: INC-002 | Reported | Chemistry Lab 3
+[AlertService] -> ZONE-LAB3: An incident has been reported in your area.
+[Facade] Zone check: Chemistry Lab 3 [Unlocked, level 0]
+
+--- Facade::respondToIncident ---
+[Command] ActivateAlertCommand -> Alert Service
+[AlertService] CAMPUS BROADCAST: Emergency response underway for INC-002 at Chemistry Lab 3
+[Command] DispatchUnitCommand -> Medical Desk
+[Medical MED-01] On scene at Chemistry Lab 3.
+    -> triage started, ambulance bay notified.
+[Mediator] Coordinating Medical unit MED-01 on scene at Chemistry Lab 3.
+[Mediator] 'unit_dispatched' raised by Medical Desk for INC-002 -> informing 5 component(s).
+    [Security Desk] clearing an approach route for Chemistry Lab 3.
+    [Facilities Desk] isolating power and ventilation around ZONE-LAB3.
+[AccessZone ZONE-LAB3] access restricted to level 3 (responders only).
+[AlertService] -> ZONE-LAB3: Responders are on scene. Follow their instructions.
+[Command] SecureAreaCommand -> Access Control (ZONE-LAB3)
+[AccessZone ZONE-LAB3] access restricted to level 3 (responders only).
+[Adapter] Zone 'ZONE-LAB3' has no city mainframe code - lockdown refused.
+[Facade] City lockdown unavailable for this zone; campus access control remains in force.
+[State] INC-002: Reported -> Dispatched (responders assigned).
+[Dashboard] INC-002 (Medical, severity 4) @ Chemistry Lab 3 -> Dispatched
+[AlertService] -> ZONE-LAB3: Incident INC-002 is now Dispatched
+[AuditLog] recorded: INC-002 | Dispatched | Chemistry Lab 3
+
+--- Operator error: re-filing the same incident number ---
+
+--- Facade::reportIncident ---
+[Repository] REFUSED: incident INC-002 is already registered.
+
+--- Second casualty reported: no medical unit is free ---
+[Command] DispatchUnitCommand -> Medical Desk
+[Medical Desk] REFUSED: every Medical unit is already committed.
+[Mediator] 'resource_exhausted' raised by Medical Desk for INC-002 -> informing 5 component(s).
+[AlertService] CAMPUS BROADCAST: Response to INC-002 is delayed; external help requested.
+    [Mutual Aid Liaison] escalating to City Emergency Services (legacy mainframe).
+[Adapter] dispatchUnit("Medical", "Chemistry Lab 3") -> legacyDispatch(22, ...)
+[CityMainframe] DSP|22|Chemistry Lab 3|ACK
+[Console] DispatchUnitCommand did not complete; logged for the incident report.
+
+--- Operator error: securing a zone that does not exist ---
+[Command] SecureAreaCommand -> Access Control (ZONE-XYZ)
+[AccessControl] REFUSED: no zone 'ZONE-XYZ' is registered on campus.
+[Console] SecureAreaCommand did not complete; logged for the incident report.
+
+--- Facade::cancelLastAction ---
+[Command] CancelLastActionCommand -> Operator Console
+[Command] SecureAreaCommand was never applied; nothing to undo.
+
+--- Facade::respondToIncident ---
+[Facade] REFUSED: no incident with id 'INC-999' is on file.
+
+--- Facade::resolveIncident ---
+[State] INC-002: Dispatched -> InProgress (units on scene).
+[Dashboard] INC-002 (Medical, severity 4) @ Chemistry Lab 3 -> InProgress
+[AlertService] -> ZONE-LAB3: Incident INC-002 is now InProgress
+[AuditLog] recorded: INC-002 | InProgress | Chemistry Lab 3
+[State] INC-002: InProgress -> Resolved (scene made safe).
+[Dashboard] INC-002 (Medical, severity 4) @ Chemistry Lab 3 -> Resolved
+[AlertService] -> ZONE-LAB3: Incident INC-002 is now Resolved
+[AuditLog] recorded: INC-002 | Resolved | Chemistry Lab 3
+[Medical MED-01] stood down, back at base.
+[Mediator] 'incident_resolved' raised by system for INC-002 -> informing 6 component(s).
+    [Security Desk] standing the perimeter down.
+    [Medical Desk] closing the patient record for INC-002.
+    [Facilities Desk] scheduling a damage inspection.
+[AccessZone ZONE-LAB3] doors UNLOCKED, access restored.
+[AlertService] CAMPUS BROADCAST: Incident INC-002 is resolved. Normal operations resume.
+[Adapter] Zone 'ZONE-LAB3' has no city mainframe code - release refused.
+
+--- Operator error: dispatching to a closed incident ---
+[Command] DispatchUnitCommand -> Security Desk
+[Security Desk] REFUSED: INC-002 is Resolved; no further units will be sent.
+[Console] DispatchUnitCommand did not complete; logged for the incident report.
+
+==================================================
+ END OF SHIFT SUMMARY
+==================================================
+[Repository] 2 incident(s) on file:
+    INC-001 - Fire @ Engineering Building A - Resolved
+    INC-002 - Medical @ Chemistry Lab 3 - Resolved
+[Console] action history (11):
+    1. ActivateAlertCommand
+    2. DispatchUnitCommand
+    3. SecureAreaCommand
+    4. EvacuateZoneCommand
+    5. DispatchUnitCommand
+    6. ActivateAlertCommand
+    7. DispatchUnitCommand
+    8. SecureAreaCommand
+    9. DispatchUnitCommand
+    10. CancelLastActionCommand
+    11. DispatchUnitCommand
+[AuditLog] 8 status change(s) recorded.
+    INC-001 | Reported | Engineering Building A
+    INC-001 | Dispatched | Engineering Building A
+    INC-001 | InProgress | Engineering Building A
+    INC-001 | Resolved | Engineering Building A
+    INC-002 | Reported | Chemistry Lab 3
+    INC-002 | Dispatched | Chemistry Lab 3
+    INC-002 | InProgress | Chemistry Lab 3
+    INC-002 | Resolved | Chemistry Lab 3
+[AlertService] 20 message(s) sent.
+[CityServices] ZONE-A is: Open
+
+=== Shutdown: releasing all owned resources ===
