@@ -1,10 +1,14 @@
-* ed343e2 (origin/diagrams) Add files via upload
-* 144478a Delete FinalSq1.drawio
-* d07487f Add files via upload
-* 0c57a6d Delete Sq2Final.drawio
-* dcbd3f9 Add files via upload
-* 305b1d7 Delete Sq1 (1).drawio
-* a56013e (HEAD -> diagrams) Updated State diagram with End Node
+* 672e64a (HEAD -> diagrams) Modified readme file
+* 3418bdd Fixed docker compose
+* bdcc209 git history
+| * ed343e2 (origin/diagrams) Add files via upload
+| * 144478a Delete FinalSq1.drawio
+| * d07487f Add files via upload
+| * 0c57a6d Delete Sq2Final.drawio
+| * dcbd3f9 Add files via upload
+| * 305b1d7 Delete Sq1 (1).drawio
+|/  
+* a56013e Updated State diagram with End Node
 * d8f2cf2 Add files via upload
 * 51e61f3 Final UML diagram
 | * 567aee7 (origin/main, origin/HEAD, main) Final pdf added
