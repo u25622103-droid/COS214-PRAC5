@@ -1,0 +1,27 @@
+* ed343e2 (origin/diagrams) Add files via upload
+* 144478a Delete FinalSq1.drawio
+* d07487f Add files via upload
+* 0c57a6d Delete Sq2Final.drawio
+* dcbd3f9 Add files via upload
+* 305b1d7 Delete Sq1 (1).drawio
+* a56013e (HEAD -> diagrams) Updated State diagram with End Node
+* d8f2cf2 Add files via upload
+* 51e61f3 Final UML diagram
+| * 567aee7 (origin/main, origin/HEAD, main) Final pdf added
+|/  
+* fbf2b3d gdb investigation
+* 44e2ef4 added dubugging flag
+* fb2f76e Added docker compose
+* 256e32f Fixed dockerfile
+* 2d90cfa valgrind proof
+* 21b2dfa output of the main
+* bdbb1ea Added valgrind rule/instruction
+*   56b3451 Merge pull request #1 from u25622103-droid/code
+|\  
+| * 8f1fc4f (origin/code, code) Uploaded preliminary code files
+| * 6656e96 Target Interface for Adapter
+* | 85c20c8 Added docker ignore file
+* | 8bf1afd Created dockerfile
+* | 4a85731 Created Makefile
+|/  
+* 1a1dab7 Initial commit
