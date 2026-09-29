@@ -2,5 +2,5 @@ services:
   campusguard:
     build: .
     container_name: campusguard
-    command: ./campusGuard
+    command: tail -f /dev/null
 
